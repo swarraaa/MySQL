@@ -156,6 +156,7 @@ LEFT JOIN Bookreturn br ON bi.accnum = br.accnum
 WHERE br.accnum IS NULL;
 	
 -- 11. Create trigger to keep records in new summary table while book is issued from bookissue.
+DELIMITER // 
 CREATE TRIGGER BookIssueTrigger
 AFTER INSERT ON Bookissue
 FOR EACH ROW
@@ -163,3 +164,4 @@ BEGIN
     INSERT INTO BookIssueSummary (accnum, issuedate)
     VALUES (NEW.accnum, NEW.issuedate);
 END;
+// 
