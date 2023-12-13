@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mysql-server:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - shravani-network
+  server-container:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: shravani-nodeform
+    ports:
+      - "5000:5000"
+    networks:
+      - shravani-network
+    depends_on:
+      - mysql-server
+
+networks:
+  shravani-network:
+    driver: bridge

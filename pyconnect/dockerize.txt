@@ -1,0 +1,117 @@
+sudo docker network create assignment
+
+docker run -d --name mysql-container --network assignment -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb mysql:latest
+
+1) Create file "index.php" and paste the code
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Example</title>
+</head>
+<body>
+    <h1>Submit Form</h1>
+    <form action="" method="POST">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+
+        <label for="subject">Subject:</label><br>
+        <input type="text" id="subject" name="subject"><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $servername = "mysql-container";
+        $username = "root";
+        $password = "password";
+        $dbname = "Details";
+
+        $name = $_POST["name"];
+        $subject = $_POST["subject"];
+
+        // Create a connection to MySQL
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        try {
+            // Create the 'users' table if it doesn't exist
+            $createTableQuery = "CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                subject VARCHAR(255) NOT NULL
+            )";
+            if ($conn->query($createTableQuery) === TRUE) {
+                echo "Table created successfully.<br>";
+            } else {
+                echo "Error creating table: " . $conn->error . "<br>";
+            }
+
+            // Insert data into the 'users' table
+            $insertQuery = "INSERT INTO users (name, subject) VALUES ('$name', '$subject')";
+            if ($conn->query($insertQuery) === TRUE) {
+                echo "Data inserted successfully.";
+            } else {
+                echo "Error inserting data: " . $conn->error . "<br>";
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conn->close(); // Close the connection
+    }
+    ?>
+</body>
+</html>
+
+---------------------------------------------------------
+
+2) create file "Dockerfile" and paste the code
+
+FROM mysql:latest
+
+ENV MYSQL_ROOT_PASSWORD=password
+ENV MYSQL_DATABASE=mydb
+
+EXPOSE 3306
+
+----------------------------------
+
+3) Run this command
+
+sudo docker build -t mysql-container .
+
+-----------------------------------
+4) create file "Dockerfile.php" and paste the code
+
+FROM php:apache
+
+COPY index.php /var/www/html/index.php
+
+RUN docker-php-ext-install mysqli
+
+EXPOSE 80
+
+
+-----------------------------------
+5) Run this Command
+
+docker build -t php-container -f Dockerfile.php .
+
+-----------------------------------
+6) Run This Command
+
+docker run -d --name mysql-container mysql-container
+
+-------------------------------------
+7) Run this Command
+
+docker run -d -p 8080:80 --name php-container --network assignment php-container
+
+-------------------------------------
