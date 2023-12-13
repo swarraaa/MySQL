@@ -5,21 +5,21 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3306:3306"
+      - '3307:3306'
     networks:
-      - shravani-network
+      - swarada-network
   server-container:
     build:
       context: .
       dockerfile: dockerfile
-    image: shravani-nodeform
+    image: swarada-nodeform
     ports:
-      - "5000:5000"
+      - '5000:5000'
     networks:
-      - shravani-network
+      - swarada-network
     depends_on:
       - mysql-server
 
 networks:
-  shravani-network:
+  swarada-network:
     driver: bridge
