@@ -5,3 +5,25 @@ sudo systemctl enable mysql
 sudo apt install python3
 sudo apt install python3-pip
 pip3 install mysql-connector-python
+
+sudo mysql -u root -p
+CREATE DATABASE yourdb;
+CREATE USER 'youruser'@'localhost' IDENTIFIED BY 'yourpassword';
+GRANT ALL PRIVILEGES ON yourdb.* TO 'youruser'@'localhost';
+ FLUSH PRIVILEGES;
+
+ USE yourdb;  -- Switch to the 'yourdb' database
+ CREATE TABLE your_table_name (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255),
+    hobby VARCHAR(255)
+ );
+ INSERT INTO your_table_name (name, hobby) VALUES
+     ('swarada', 'playing'),
+    ('shravani', 'traveling'),
+    ('vaishnavi', 'singing'),
+     ('yashashwi', 'reading'),
+    ('datta', 'roaming'),
+     ('jyot', 'photography');
+
+ EXIT;

@@ -12,7 +12,7 @@
 
 ### Access the MySQL container
 
-- sudo docker exec -it <container_id> bash
+- sudo docker exec -it [container_id] bash
 
 ---
 
